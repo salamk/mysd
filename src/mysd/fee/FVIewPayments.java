@@ -1,0 +1,489 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * FVIewPayments.java
+ *
+ * Created on Mar 3, 2011, 1:17:57 PM
+ */
+
+package mysd.fee;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+import mysd.GeneralDB;
+
+/**
+ *
+ * @author salam
+ */
+public class FVIewPayments extends javax.swing.JFrame {
+    private GeneralDB gdb;
+
+    /** Creates new form FVIewPayments */
+    public FVIewPayments() {
+        initComponents();
+        gdb = new GeneralDB();
+    }
+
+    public void setDisablePnlByDate(){
+        tfDateFrom.setEnabled(false);
+        tfDateTo.setEnabled(false);
+        btnSearchByDate.setEnabled(false);
+    }
+
+    public void setDisablePnlByGrade(){
+        cmbGrade.setEnabled(false);
+        cmbTimeCode.setEnabled(false);
+        btnSearchByGrade.setEnabled(false);
+    }
+
+    public void setDisablePnlByStudent(){
+        tfStudentID.setEnabled(false);
+        btnSearchByStudent.setEnabled(false);
+    }
+
+    public void getVoucherByDate(String dateFrom,String dateTo){
+
+        DefaultTableModel model = (DefaultTableModel)tblVoucher.getModel();
+        model.setRowCount(0);
+
+        String query = "SELECT VOUCHERID, INVOICEID,STUDENTID,STUDENTNAME,"
+                + "PAYMENTDATE, PAYMENTAMOUNT FROM PAYMENT WHERE "
+                + "PAYMENTDATE BETWEEN '"+dateFrom+"' AND '"+dateTo+"'";
+
+        String title = "Payment Recieved: From ("
+                + ""+tfDateFrom.getText()+") To ("+tfDateTo.getText()+")";
+                
+
+        tfTitle.setText(title);
+
+
+        double totalAmount = 0;
+
+        ArrayList al = gdb.searchRecord(query);
+
+        Iterator i = al.iterator();
+        while(i.hasNext()){
+            Vector v = (Vector)i.next();
+            model.addRow(v);
+            double amount = 0;
+            try{
+                amount = Double.parseDouble((String)v.get(5));
+            }catch(Exception nfe){
+                amount = 0;
+            }
+            
+            totalAmount+=amount;
+
+            this.tfTotal.setText("Total Amount Recieved: "+Double.toString(totalAmount));
+        }
+    }
+
+    public void getVoucherByStudent(String studentID){
+
+        DefaultTableModel model = (DefaultTableModel)tblVoucher.getModel();
+        model.setRowCount(0);
+
+        String query = "SELECT VOUCHERID, INVOICEID,STUDENTID,STUDENTNAME,"
+                + "PAYMENTDATE, PAYMENTAMOUNT FROM PAYMENT WHERE "
+                + "STUDENTID LIKE '"+studentID+"'";
+                
+
+        String name = getStudentName(studentID);
+        String title = "Payment Recieved From: ("+studentID+" - "+name+")";
+
+
+        tfTitle.setText(title);
+
+
+        double totalAmount = 0;
+
+        ArrayList al = gdb.searchRecord(query);
+
+        Iterator i = al.iterator();
+        while(i.hasNext()){
+            Vector v = (Vector)i.next();
+            model.addRow(v);
+            double amount = 0;
+            try{
+                amount = Double.parseDouble((String)v.get(5));
+            }catch(Exception nfe){
+                amount = 0;
+            }
+
+            totalAmount+=amount;
+
+            this.tfTotal.setText("Total Amount Recieved: "+Double.toString(totalAmount));
+        }
+    }
+
+
+    public void getVoucherByGrade(String timeCode,String gradeID){
+
+        DefaultTableModel model = (DefaultTableModel)tblVoucher.getModel();
+        model.setRowCount(0);
+
+        String query = "SELECT VOUCHERID, INVOICEID,STUDENTID,STUDENTNAME,"
+                + "PAYMENTDATE, PAYMENTAMOUNT FROM PAYMENT WHERE "
+                + "TIMECODE LIKE '"+timeCode+"' AND GRADEID LIKE '"+gradeID+"'";
+
+        String title = "Payment Recieved: Month ("
+                + ""+cmbTimeCode.getMonthName()+", "+cmbTimeCode.getYear()+") "
+                + " Grade/Class ("+gradeID+")";
+
+        tfTitle.setText(title);
+
+        double totalAmount = 0;
+
+        ArrayList al = gdb.searchRecord(query);
+
+        Iterator i = al.iterator();
+        while(i.hasNext()){
+            Vector v = (Vector)i.next();
+            model.addRow(v);
+            double amount = 0;
+            try{
+                amount = Double.parseDouble((String)v.get(5));
+            }catch(Exception nfe){
+                amount = 0;
+            }
+
+            totalAmount+=amount;
+            this.tfTotal.setText("Total Amount Recieved: "+Double.toString(totalAmount));
+        }
+    }
+
+    public String getStudentName(String studentID){
+        String name = "";
+        String query = "SELECT FULL_NAME FROM STUDENT WHERE STUDENT_ID "
+                + "LIKE '"+studentID+"'";
+        name = gdb.getSingleColumnData(query);
+        return name;
+    }
+
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pnlByDate = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        btnSearchByDate = new javax.swing.JButton();
+        tfDateFrom = new acr.component.CDateField();
+        tfDateTo = new acr.component.CDateField();
+        pnlByStudent = new javax.swing.JPanel();
+        btnSearchByStudent = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        tfStudentID = new acr.component.CAlphaNumericField();
+        jButton1 = new javax.swing.JButton();
+        pnlByGrade = new javax.swing.JPanel();
+        btnSearchByGrade = new javax.swing.JButton();
+        cmbGrade = new mysd.CCMBGrade();
+        cmbTimeCode = new mysd.CCMBTimeCode();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblVoucher = new javax.swing.JTable();
+        tfTotal = new javax.swing.JTextField();
+        tfTitle = new javax.swing.JTextField();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        pnlByDate.setBackground(new java.awt.Color(255, 255, 204));
+
+        jLabel1.setText("Date (From)");
+
+        jLabel2.setText("Date (To)");
+
+        btnSearchByDate.setBackground(new java.awt.Color(204, 204, 255));
+        btnSearchByDate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refreshicon24.png"))); // NOI18N
+        btnSearchByDate.setOpaque(false);
+        btnSearchByDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchByDateActionPerformed(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout pnlByDateLayout = new org.jdesktop.layout.GroupLayout(pnlByDate);
+        pnlByDate.setLayout(pnlByDateLayout);
+        pnlByDateLayout.setHorizontalGroup(
+            pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlByDateLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(tfDateTo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 124, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(tfDateFrom, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 124, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(4, 4, 4)
+                .add(btnSearchByDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 44, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlByDateLayout.setVerticalGroup(
+            pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlByDateLayout.createSequentialGroup()
+                .add(16, 16, 16)
+                .add(pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(btnSearchByDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 55, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(pnlByDateLayout.createSequentialGroup()
+                        .add(pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel1)
+                            .add(tfDateFrom, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(pnlByDateLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(pnlByDateLayout.createSequentialGroup()
+                                .add(4, 4, 4)
+                                .add(jLabel2))
+                            .add(tfDateTo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+
+        pnlByStudent.setBackground(new java.awt.Color(204, 255, 255));
+
+        btnSearchByStudent.setBackground(new java.awt.Color(204, 204, 255));
+        btnSearchByStudent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refreshicon24.png"))); // NOI18N
+        btnSearchByStudent.setOpaque(false);
+        btnSearchByStudent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchByStudentActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Student ID");
+
+        jButton1.setBackground(new java.awt.Color(204, 204, 255));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/report01_48.png"))); // NOI18N
+        jButton1.setText("Build Report");
+        jButton1.setOpaque(false);
+
+        org.jdesktop.layout.GroupLayout pnlByStudentLayout = new org.jdesktop.layout.GroupLayout(pnlByStudent);
+        pnlByStudent.setLayout(pnlByStudentLayout);
+        pnlByStudentLayout.setHorizontalGroup(
+            pnlByStudentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlByStudentLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(jButton1)
+                .add(148, 148, 148)
+                .add(jLabel5)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(tfStudentID, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 111, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(btnSearchByStudent, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 44, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(126, 126, 126))
+        );
+        pnlByStudentLayout.setVerticalGroup(
+            pnlByStudentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlByStudentLayout.createSequentialGroup()
+                .add(pnlByStudentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(pnlByStudentLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(pnlByStudentLayout.createSequentialGroup()
+                        .add(24, 24, 24)
+                        .add(pnlByStudentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, btnSearchByStudent, 0, 0, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, tfStudentID, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                            .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pnlByGrade.setBackground(new java.awt.Color(255, 255, 204));
+
+        btnSearchByGrade.setBackground(new java.awt.Color(204, 204, 255));
+        btnSearchByGrade.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refreshicon24.png"))); // NOI18N
+        btnSearchByGrade.setOpaque(false);
+        btnSearchByGrade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchByGradeActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Month");
+
+        jLabel3.setText("Grade ID");
+
+        org.jdesktop.layout.GroupLayout pnlByGradeLayout = new org.jdesktop.layout.GroupLayout(pnlByGrade);
+        pnlByGrade.setLayout(pnlByGradeLayout);
+        pnlByGradeLayout.setHorizontalGroup(
+            pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlByGradeLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(pnlByGradeLayout.createSequentialGroup()
+                        .add(16, 16, 16)
+                        .add(jLabel4))
+                    .add(jLabel3))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(cmbTimeCode, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(cmbGrade, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(9, 9, 9)
+                .add(btnSearchByGrade, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 39, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(34, Short.MAX_VALUE))
+        );
+        pnlByGradeLayout.setVerticalGroup(
+            pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlByGradeLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(btnSearchByGrade, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 54, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(pnlByGradeLayout.createSequentialGroup()
+                        .add(pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(cmbGrade, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel3))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(pnlByGradeLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(cmbTimeCode, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel4))))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        tblVoucher.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Voucher#", "Invoice#", "Student#", "Name", "Date", "Amount"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblVoucher.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblVoucher);
+        tblVoucher.getColumnModel().getColumn(0).setResizable(false);
+        tblVoucher.getColumnModel().getColumn(1).setResizable(false);
+        tblVoucher.getColumnModel().getColumn(2).setResizable(false);
+        tblVoucher.getColumnModel().getColumn(3).setResizable(false);
+        tblVoucher.getColumnModel().getColumn(4).setResizable(false);
+        tblVoucher.getColumnModel().getColumn(5).setResizable(false);
+
+        tfTotal.setBackground(new java.awt.Color(204, 255, 255));
+        tfTotal.setEditable(false);
+        tfTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tfTotal.setBorder(null);
+
+        tfTitle.setBackground(new java.awt.Color(255, 255, 204));
+        tfTitle.setEditable(false);
+        tfTitle.setFont(new java.awt.Font("Dialog", 1, 12));
+        tfTitle.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tfTitle.setBorder(null);
+        tfTitle.setDisabledTextColor(new java.awt.Color(0, 0, 51));
+        tfTitle.setEnabled(false);
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tfTotal, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, tfTitle)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, pnlByStudent, 0, 614, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(pnlByDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(pnlByGrade, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(pnlByGrade, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(pnlByDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(pnlByStudent, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(tfTitle, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 360, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(tfTotal, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSearchByDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchByDateActionPerformed
+        // TODO add your handling code here:
+        String dateFrom = tfDateFrom.getSQLDate();
+        String dateTo = tfDateTo.getSQLDate();
+        this.getVoucherByDate(dateFrom, dateTo);
+}//GEN-LAST:event_btnSearchByDateActionPerformed
+
+    private void btnSearchByStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchByStudentActionPerformed
+        // TODO add your handling code here:
+        String studentID = tfStudentID.getText();
+        this.getVoucherByStudent(studentID);
+}//GEN-LAST:event_btnSearchByStudentActionPerformed
+
+    private void btnSearchByGradeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchByGradeActionPerformed
+        String gradeID = (String)cmbGrade.getSelectedItem();
+        String timeCode = cmbTimeCode.getTimeCode();
+        this.getVoucherByGrade(timeCode, gradeID);
+        //this.getInvoiceRecord(timeCode, gradeID);
+}//GEN-LAST:event_btnSearchByGradeActionPerformed
+
+    /**
+    * @param args the command line arguments
+    */
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FVIewPayments().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSearchByDate;
+    private javax.swing.JButton btnSearchByGrade;
+    private javax.swing.JButton btnSearchByStudent;
+    private mysd.CCMBGrade cmbGrade;
+    private mysd.CCMBTimeCode cmbTimeCode;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel pnlByDate;
+    private javax.swing.JPanel pnlByGrade;
+    private javax.swing.JPanel pnlByStudent;
+    private javax.swing.JTable tblVoucher;
+    private acr.component.CDateField tfDateFrom;
+    private acr.component.CDateField tfDateTo;
+    private acr.component.CAlphaNumericField tfStudentID;
+    private javax.swing.JTextField tfTitle;
+    private javax.swing.JTextField tfTotal;
+    // End of variables declaration//GEN-END:variables
+
+}
